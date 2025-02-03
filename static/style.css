@@ -1,0 +1,334 @@
+/* General Reset */
+body, h1, h2, p, ul, li, form, input, button {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: Arial, sans-serif;
+}
+body {
+    overflow-y: auto !important; /* Ensure vertical scrolling is always enabled */
+    background-color: #f7f9fc;
+    color: #333;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.container {
+    background: #fff;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    width: 90%;
+    max-width: 800px;
+}
+
+/* Header */
+h1 {
+    text-align: center;
+    color: #4a90e2;
+    margin-bottom: 20px;
+}
+
+/* Form */
+form {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+label {
+    font-weight: bold;
+    color: #555;
+}
+
+input[type="text"] {
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 16px;
+    width: 100%;
+}
+
+button[type="submit"] {
+    padding: 10px 20px;
+    background-color: #4a90e2;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+    transition: background-color 0.3s;
+}
+
+button[type="submit"]:hover {
+    background-color: #357ab7;
+}
+
+/* Results */
+.result {
+    background-color: #e6f7ff;
+    border: 1px solid #b3e0ff;
+    padding: 15px;
+    border-radius: 5px;
+    margin-bottom: 20px;
+    overflow-y: auto;
+}
+
+.highlight-token {
+    padding: 2px;
+    margin: 0 1px;
+    border-radius: 3px;
+}
+
+.highlight-token[style*="lightblue"] {
+    background-color: lightblue;
+    font-weight: bold;
+    color: black;
+}
+
+
+/* Buttons for Emotion Classification */
+.button-container {
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+    margin-bottom: 20px;
+}
+
+.button-container button {
+    padding: 10px 15px;
+    border: none;
+    border-radius: 5px;
+    background-color: #f0f0f0;
+    color: #333;
+    cursor: pointer;
+    font-size: 14px;
+    transition: background-color 0.3s;
+}
+
+.button-container button:hover {
+    background-color: #d9eaf7;
+}
+
+/* Table */
+#table-container {
+    margin-top: 20px;
+    overflow-x: auto;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    text-align: left;
+}
+
+table th, table td {
+    padding: 10px;
+    border: 1px solid #ddd;
+}
+
+table th {
+    background-color: #f0f8ff;
+    color: #333;
+    font-weight: bold;
+}
+
+/* Phrase Analysis Section */
+#phrase-analysis-container {
+    margin-top: 30px;
+    background-color: #fff;
+    border: 1px solid #ddd;
+    padding: 15px;
+    border-radius: 5px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+#phrase-analysis-container h2 {
+    margin-bottom: 15px;
+    font-size: 18px;
+    color: #4a90e2;
+}
+
+#phrase-analysis-container table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+#phrase-analysis-container th, #phrase-analysis-container td {
+    border: 1px solid #ddd;
+    padding: 10px;
+    text-align: left;
+}
+
+#phrase-analysis-container th {
+    background-color: #f5f5f5;
+    color: #333;
+}
+
+#phrase-analysis-container td {
+    background-color: #fafafa;
+}
+
+.all-scores {
+    margin-top: 20px;
+    padding: 15px;
+    background-color: #f9f9f9;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+}
+
+.all-scores h2 {
+    margin-bottom: 10px;
+    font-size: 1.5em;
+    color: #333;
+    text-align: center;
+}
+
+.all-scores ul {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+}
+
+.all-scores li {
+    padding: 8px;
+    border-bottom: 1px solid #ddd;
+    display: flex;
+    justify-content: space-between;
+    font-size: 1.1em;
+}
+
+.all-scores li:last-child {
+    border-bottom: none;
+}
+
+.all-scores li strong {
+    color: #555;
+}
+
+.all-scores li span {
+    font-weight: bold;
+    color: #007BFF;
+}
+
+/* Add hover effect */
+.all-scores li:hover {
+    background-color: #f1f1f1;
+}
+
+.predictions-container {
+    font-family: Arial, sans-serif;
+    background-color: #f9f9f9;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    padding: 16px;
+    margin: 16px 0;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.predictions-container h3 {
+    color: #333;
+    font-size: 1.2em;
+    margin-bottom: 12px;
+}
+
+.predictions-container ul {
+    list-style-type: none;
+    padding: 0;
+}
+
+.model-prediction {
+    margin-bottom: 12px;
+    border-bottom: 1px solid #ddd;
+    padding-bottom: 12px;
+}
+
+.model-prediction:last-child {
+    border-bottom: none;
+}
+
+.confidence {
+    color: #4caf50;
+    font-weight: bold;
+}
+
+.confidence-score {
+    color: #007bff;
+    font-weight: bold;
+}
+
+.label-scores {
+    margin-top: 8px;
+    padding-left: 20px;
+}
+
+.label-scores li {
+    margin: 4px 0;
+    font-size: 0.9em;
+}
+
+.label {
+    color: #333;
+    font-weight: bold;
+}
+
+.score {
+    color: #555;
+}
+
+.toggle-button {
+    display: inline-block;
+    background-color: #007bff;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    padding: 10px 16px;
+    font-size: 14px;
+    cursor: pointer;
+    margin-bottom: 10px;
+    transition: background-color 0.3s ease;
+}
+
+.toggle-button:hover {
+    background-color: #0056b3;
+}
+
+    #phrase-analysis-container {
+        overflow-y: auto; /* Add scroll for overflow */
+        margin-top: 10px;
+        border: 1px solid #ccc; /* Add border for better visibility */
+        border-radius: 5px;
+        padding: 15px;
+        background-color: #f9f9f9; /* Subtle background color */
+    }
+
+    /* Optional: Add a shadow effect for better visibility */
+    #phrase-analysis-container {
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    }
+
+    /* Ensure the body can still scroll even if a container is open */
+    body {
+        overflow-x: hidden; /* Prevent horizontal scrolling */
+    }
+
+    /* Add styling for the toggle button */
+    .toggle-button {
+        margin-top: 10px;
+        display: inline-block;
+        background-color: #007bff;
+        color: #fff;
+        border: none;
+        border-radius: 5px;
+        padding: 10px 16px;
+        font-size: 14px;
+        cursor: pointer;
+        margin-bottom: 10px;
+        transition: background-color 0.3s ease;
+    }
+
+    .toggle-button:hover {
+        background-color: #0056b3;
+    }

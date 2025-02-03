@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Emotion Classifier</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <div class="container">
+        <h1>Emotion Classifier</h1>
+        <form method="post" id="emotion-form">
+            <label for="phrase">Enter a phrase:</label>
+            <input type="text" id="phrase" name="phrase" placeholder="Type your text here" required>
+            <button type="submit" name="action" value="bert">Predict Emotion with BERT!</button>
+            <button type="submit" name="action" value="distilbert">Predict Emotion with DISTILBERT!</button>
+            <button type="submit" name="action" value="roberta">Predict Emotion with ROBERTA!</button>
+            <button type="submit" name="action" value="all">Compare all models</button>
+
+        </form>
+
+        {% if predicted_label and confidence_score %}
+        <div class="result">
+            <h2>Prediction using {{ action }}</h2>
+            <p>
+                The predicted emotion for phrase:  || {{ phrase }}
+                <!-- {{ token_highlights }} -->
+                <!-- <span class="highlight">
+                    {% for token in token_highlights %}
+                        {% if token.highlight %}
+                            <span class="highlight-token" style="background-color: lightblue">{{ token.token }}</span>
+                        {% else %}
+                            <span class="highlight-token" >{{ token.token }}</span>
+                        {% endif %}
+
+                    {% endfor %} -->
+                <!-- </span>  -->
+                <span class="highlight2" id="label"> || is the label of: {{ predicted_label }}</span> 
+                with a confidence score of 
+                <span class="highlight2" id="score">{{ confidence_score | round(2) }}</span>.
+            </p>
+            <br>
+
+            <div class="all-scores">
+                <h2>Scores for All Labels</h2>
+                <ul>
+                    {% for label, score in all_scores.items() %}
+                    <li>
+                        <strong>{{ label.capitalize() }}:</strong> {{ score | round(2) }}
+                    </li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+        {% endif %}
+
+        {% if all_predictions %}
+            <div class="result">
+                <div class="predictions-container">
+                    <h3>All Model Predictions</h3>
+                    <ul>
+                        {% for model, prediction in all_predictions.items() %}
+                            <li class="model-prediction">
+                                <strong>{{ model }}:</strong> 
+                                <span class="confidence">{{ labels[prediction[0]] }}</span> 
+                                (Confidence: <span class="confidence-score">{{ prediction[1]|round(2) }}</span>)
+                                <ul class="label-scores">
+                                    {% for label, score in prediction[2].items() %}
+                                        <li><span class="label">{{ label }}</span>: <span class="score">{{ score|round(2) }}</span></li>
+                                    {% endfor %}
+                                </ul>
+                            </li>
+                        {% endfor %}
+                    </ul>
+                </div>                
+            </div>
+        {% endif %}
+
+
+        <!-- Emotion Classification Buttons -->
+        <div class="button-container">
+            <button onclick="loadTable(0)">Sadness</button>
+            <button onclick="loadTable(1)">Joy</button>
+            <button onclick="loadTable(2)">Love</button>
+            <button onclick="loadTable(3)">Anger</button>
+            <button onclick="loadTable(4)">Fear</button>
+            <button onclick="loadTable(5)">Surprise</button>
+        </div>
+
+        <!-- Table Container for Common Words -->
+        <div id="table-container"></div>
+
+        <!-- Phrase Analysis Container -->
+        <div>
+            <button id="toggle-phrase-analysis" class="toggle-button">Show Phrase Analysis</button>
+            <div id="phrase-analysis-container" style="display: none;">
+                <h2>Phrase Analysis</h2>
+                {% if word_details %}
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Word</th>
+                            <th>POS</th>
+                            <th>Dependency</th>
+                            <th>Morph</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for word in word_details %}
+                        <tr>
+                            <td>{{ word.text }}</td>
+                            <td>{{ word.pos }}</td>
+                            <td>{{ word.dep }}</td>
+                            <td>{{ word.morph }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+                {% else %}
+                <p>No analysis available. Please enter a phrase.</p>
+                {% endif %}
+            </div>
+        </div>
+        
+    </div>
+
+    <script>
+        const data = {
+            0: {
+                label: 'Sadness',
+                commonWords: {
+                    adjectives: [
+                        "little", "bad", "good", "sad", "other", "more", "sorry", "lonely", 
+                        "last", "stupid", "many", "guilty", "emotional", "depressed", "much", 
+                        "low", "useless", "horrible", "embarrassed", "terrible", "worthless", 
+                        "unhappy", "awful", "hopeless", "empty"
+                    ],
+
+                }
+            }, 
+            1: {
+                label: 'Joy',
+                commonWords: {
+                    adjectives: [
+                        "good", "little", "happy", "more", "other", "sure", "new", "many", 
+                        "strong", "able", "excited", "important", "comfortable", "confident", 
+                        "amazing", "well", "free", "wonderful", "positive", "few", "thankful", 
+                        "own", "special", "glad", "sweet"
+                    ],
+                }
+            },
+            2: {
+                label: 'Love',
+                commonWords: {
+                    adjectives: [
+                        "hot", "sweet", "little", "sympathetic", "gentle", "lovely", "romantic", 
+                        "passionate", "nostalgic", "generous", "supportive", "delicate", "loyal", 
+                        "beloved", "good", "more", "other", "fond", "tender", "faithful", "horny", 
+                        "blessed", "compassionate", "much", "many"
+                    ],
+
+                }
+            },
+            3: {
+                label: 'Anger',
+                commonWords: {
+                    adjectives: [
+                        "little", "angry", "selfish", "jealous", "frustrated", "irritated", "mad", 
+                        "bitter", "resentful", "other", "irritable", "dangerous", "cold", "rude", 
+                        "grumpy", "cranky", "dissatisfied", "greedy", "impatient", "agitated", 
+                        "mean", "violent", "envious", "good", "annoyed"
+                    ],
+                }
+            },
+            4: {
+                label: 'Fear',
+                commonWords: {
+                    adjectives: [
+                        "little", "afraid", "anxious", "scared", "nervous", "uncomfortable", 
+                        "weird", "strange", "overwhelmed", "vulnerable", "unsure", "reluctant", 
+                        "shaky", "hesitant", "uncertain", "helpless", "paranoid", "shy", "agitated", 
+                        "insecure", "fearful", "restless", "frightened", "pressured", "confused"
+                    ],
+                }
+            },
+            5: {
+                label: 'Surprise',
+                commonWords: {
+                    adjectives: [
+                        "weird", "amazed", "strange", "amazing", "overwhelmed", "curious", "funny", 
+                        "surprised", "impressed", "little", "shocked", "stunned", "other", "good", 
+                        "more", "many", "much", "last", "same", "new", "first", "few", "sure", 
+                        "happy", "own"
+                    ],
+                }
+            }
+        };
+
+        function loadTable(labelIndex) {
+            const labelData = data[labelIndex];
+            const container = document.getElementById('table-container');
+            container.innerHTML = ''; // Clear previous table
+
+            const table = document.createElement('table');
+            const headerRow = document.createElement('tr');
+            const headers = ['Type', 'Words'];
+
+            headers.forEach(header => {
+                const th = document.createElement('th');
+                th.textContent = header;
+                headerRow.appendChild(th);
+            });
+
+            table.appendChild(headerRow);
+
+            // Add rows for each type of word
+            for (const [type, words] of Object.entries(labelData.commonWords)) {
+                const row = document.createElement('tr');
+                const tdType = document.createElement('td');
+                tdType.textContent = type.charAt(0).toUpperCase() + type.slice(1);
+                row.appendChild(tdType);
+
+                const tdWords = document.createElement('td');
+                tdWords.textContent = words.join(', ');
+                row.appendChild(tdWords);
+
+                table.appendChild(row);
+            }
+
+            container.appendChild(table);
+        }
+
+        document.addEventListener("DOMContentLoaded", function () {
+            const toggleButton = document.getElementById("toggle-phrase-analysis");
+            const container = document.getElementById("phrase-analysis-container");
+
+            toggleButton.addEventListener("click", function () {
+                if (container.style.display === "none") {
+                    container.style.display = "block";
+                    toggleButton.textContent = "Hide Phrase Analysis";
+
+                    // Smooth scroll to the Phrase Analysis container
+                    container.scrollIntoView({ behavior: "smooth" });
+                } else {
+                    container.style.display = "none";
+                    toggleButton.textContent = "Show Phrase Analysis";
+                }
+            });
+        });
+    </script>
+</body>
+</html>
